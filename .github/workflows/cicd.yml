@@ -12,18 +12,19 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v3
 
-        - name: Write .env file
+      - name: Write .env file
         run: |
           echo "REACT_APP_NAME=${{ secrets.REACT_APP_NAME }}" > .env
           echo "REACT_APP_ROLL=${{ secrets.REACT_APP_ROLL }}" >> .env
           echo "REACT_APP_CLASS=${{ secrets.REACT_APP_CLASS }}" >> .env
           echo "REACT_APP_BIO=${{ secrets.REACT_APP_BIO }}" >> .env
 
-
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Docker Image
         run: docker build -t zaid57/reactjs-app .
+
       - name: Publish image to docker hub
         run: docker push zaid57/reactjs-app:latest
 
@@ -40,10 +41,12 @@ jobs:
           script: |
             docker pull zaid57/reactjs-app:latest
             docker rm -f reactContainer || true
-             # Write .env file inside EC2
+
+            # Write .env file inside EC2
             echo "REACT_APP_NAME=${{ secrets.REACT_APP_NAME }}" > .env
             echo "REACT_APP_ROLL=${{ secrets.REACT_APP_ROLL }}" >> .env
             echo "REACT_APP_CLASS=${{ secrets.REACT_APP_CLASS }}" >> .env
+            echo "REACT_APP_BIO=${{ secrets.REACT_APP_BIO }}" >> .env
 
-            # Run new container with env file
+            # Run container with .env
             docker run --env-file .env -d -p 3000:80 --name reactContainer zaid57/reactjs-app:latest
