@@ -27,5 +27,6 @@ jobs:
         run: docker pull zaid57/reactjs-app:latest
       - name: Delete Old Container
         run: docker rm -f reactContainer
+
       - name: Run docker container
         run: docker run -d -p 3000:80 --name reactContainer zaid57/reactjs-app
