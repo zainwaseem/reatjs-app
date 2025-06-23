@@ -32,4 +32,10 @@ jobs:
           script: |
             docker pull zaid57/reactjs-app:latest
             docker rm -f reactContainer || true
-            docker run -d -p 3000:80 --name reactContainer zaid57/reactjs-app
+             # Write .env file inside EC2
+            echo "REACT_APP_NAME=${{ secrets.REACT_APP_NAME }}" > .env
+            echo "REACT_APP_ROLL=${{ secrets.REACT_APP_ROLL }}" >> .env
+            echo "REACT_APP_CLASS=${{ secrets.REACT_APP_CLASS }}" >> .env
+
+            # Run new container with env file
+            docker run --env-file .env -d -p 3000:80 --name reactContainer zaid57/reactjs-app:latest
